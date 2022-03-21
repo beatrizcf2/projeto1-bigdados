@@ -1,16 +1,28 @@
 import json
 from fastapi.encoders import jsonable_encoder
 
-def find_id(id, file, tag):
+def find_id(id_cart, file, tag, find_product=0, id_product=None):
     #path = "data/"+file
     with open(file, 'r', encoding='utf-8') as meu_json:
         dados = json.load(meu_json)
         for dado in dados[tag]:
-            if dado['cart_id']==id:
+            if dado['cart_id']==id_cart:
+                if find_product:
+                    return find_product(id_product,dado["products"])
                 print(f"\n{dado}\n")
                 return dado
         return False
-        
+
+
+
+def find_product(id, products):
+    print(products)
+    for product in products:
+        if product['product_id']==id:
+            print(f"achei o besta")
+            return product
+        return False
+
 def read_json(file):
     '''
         le um arquivo em json e retorna seu conteudo
@@ -34,6 +46,8 @@ def append_json(new_data, file, tag):
         f.seek(0)
         json.dump(file_data,f, indent=4)
         return
+
+
 
 def remove_from_json(id, file, tag):
     # verifica se existe o id 

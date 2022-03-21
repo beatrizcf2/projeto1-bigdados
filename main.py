@@ -66,14 +66,13 @@ async def create_cart(cart: Cart):
 
 # deletar carrinho de compras 
 @app.delete("/cart/{cart_id}", response_model=Cart)
-async def delete_cart(*, cart_id: int = Path(..., title="The ID of the cart to get", ge=1)):
-    remove_from_json(cart_id,"carts.json", "cart")
+async def delete_cart(*, cart_id: int = Path(..., title="The ID of the cart to get", ge=0)):
+    remove_from_json(cart_id,"carts.json", "carts")
     return 
 
 # ADICIONAL - ler carrinho de compras
 @app.get("/cart/{cart_id}", response_model=Cart)
 async def read_cart(cart_id: int):
-    
     return cart
     
 
@@ -95,6 +94,7 @@ async def add_to_cart(cart_id:int, product: Product):
 # como defino a quantidade de itens que vou remover?
 @app.delete("/cart/{cart_id}/product/{product_id}", response_model=Product)
 async def remove_from_cart(cart_id:int, product_id: int, product: Product):
+    remove_from_json(product_id,"carts.json", "carts")
     return product
 
 # criar produto
