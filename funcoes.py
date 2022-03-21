@@ -83,15 +83,22 @@ def update_json(id,new_data,file,tag):
     file = "data/"+file
     with open(file, 'r+') as f:
         file_data = json.load(f)
-        for dado in file_data[tag]:
+        item = file_data[tag]
+        # para cada produto no inventario
+        for dado in item: 
+            # se o id o produto esta na lista
             if dado["product_id"] == id:
-                print(f"{new_data}\n")
-                print(f"{dado}\n")
-                dado.update(new_data)
-        file_data[tag] = new_data
+                index = item.index(dado)
+                # para cada chave e valor no produto do inventario 
+                for k,v in dado.items():
+                    if dado[k] != new_data[k]:
+                        dado[k] = new_data[k] # atualiza o valor do produto
+                pass #saio do for pq ja encontrei um id
+        print(dado)
+        print(index)
         #f.truncate(0)
-        f.seek(0)
-        json.dump(file_data,f, indent=4)
+        #f.seek(0)
+        #json.dump(file_data,f, indent=4)
         return
 
 
