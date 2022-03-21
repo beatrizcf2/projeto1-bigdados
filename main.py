@@ -3,6 +3,7 @@ from urllib import response
 from fastapi import FastAPI, Path, Query, status, HTTPException
 from pydantic import BaseModel, Field, HttpUrl # for request body interactions
 from fastapi.encoders import jsonable_encoder
+import json
 
 # TAREFAS ###########################################
 
@@ -44,28 +45,8 @@ class Cart(BaseModel):
 '''
 Variaveis para aplicacao ..................................................
 '''
-inventory = {
-    1 : {"product_id": 1,
-        "name": "iogurte",
-        "description": "iogurte desnatado 200g",
-        "brand": "nestle",
-        "price": 2.7,
-        "discount": 0.05,
-        "quantity": 359,
-        "image": {
-            "url": "https://static.paodeacucar.com/img/uploads/1/912/668912.jpg",
-            "name": "iogurte desnatado nestle"
-        }
-        },
-    2 : {"product_id": 2,
-        "name": "macarrao",
-        "description": "macarrao barilla grano duro 500g",
-        "brand": "barilla",
-        "price": 10.20,
-        "discount": 0.0,
-        "quantity": 123,
-        }
-}
+
+
 
 carts = {}
 
@@ -84,8 +65,11 @@ async def root():
 @app.post("/cart/", response_model=Cart, status_code=status.HTTP_201_CREATED) 
 async def create_cart(cart: Cart):
     carts[cart.cart_id] = cart
-    print(carts)
-    return cart
+    json_obj = json.dumps(carts)
+    with open("carts.json", "w") as outfile: 
+        outfile.write(json_obj) 
+    # print(carts)
+    # return cart
 
 # deletar carrinho de compras 
 @app.delete("/cart/{cart_id}", response_model=Cart)
