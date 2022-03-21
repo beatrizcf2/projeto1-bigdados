@@ -2,7 +2,10 @@ from typing import Optional, Dict, List, Set
 from urllib import response
 from fastapi import FastAPI, Path, Query, status, HTTPException
 from pydantic import BaseModel, Field, HttpUrl # for request body interactions
-from fastapi.encoders import jsonable_encoder
+#from fastapi.encoders import jsonable_encoder
+#import json
+from funcoes import *
+
 
 # TAREFAS ###########################################
 
@@ -38,36 +41,10 @@ class Product(BaseModel):
 class Cart(BaseModel):
     cart_id: int
     user_id: int                                                    
-    products: Dict[Product,int] = dict() #chave:produto, valor:qtde
-    #products: Set[Product] = set() # lista de produtos unicos
+    #products: Dict[Product,int] = dict() #chave:produto, valor:qtde
+    products: Set[Product] = set() # lista de produtos unicos
 
-'''
-Variaveis para aplicacao ..................................................
-'''
-inventory = {
-    1 : {"product_id": 1,
-        "name": "iogurte",
-        "description": "iogurte desnatado 200g",
-        "brand": "nestle",
-        "price": 2.7,
-        "discount": 0.05,
-        "quantity": 359,
-        "image": {
-            "url": "https://static.paodeacucar.com/img/uploads/1/912/668912.jpg",
-            "name": "iogurte desnatado nestle"
-        }
-        },
-    2 : {"product_id": 2,
-        "name": "macarrao",
-        "description": "macarrao barilla grano duro 500g",
-        "brand": "barilla",
-        "price": 10.20,
-        "discount": 0.0,
-        "quantity": 123,
-        }
-}
 
-carts = {}
 
 '''
 Path operations .....................................................
@@ -83,49 +60,48 @@ async def root():
 # criar carrinho de compras
 @app.post("/cart/", response_model=Cart, status_code=status.HTTP_201_CREATED) 
 async def create_cart(cart: Cart):
-    carts[cart.cart_id] = cart
-    print(carts)
+    #find_id(1, "carts.json", "carts")
+    append_json(cart, "carts.json", "carts")
     return cart
 
 # deletar carrinho de compras 
 @app.delete("/cart/{cart_id}", response_model=Cart)
 async def delete_cart(*, cart_id: int = Path(..., title="The ID of the cart to get", ge=1)):
-    if cart_id not in carts:
-        raise HTTPException(status_code=404, detail="Cart not found")
-    del carts[cart_id]
-    print(carts)
-    return carts
+    remove_from_json(cart_id,"carts.json", "cart")
+    return 
 
 # ADICIONAL - ler carrinho de compras
 @app.get("/cart/{cart_id}", response_model=Cart)
 async def read_cart(cart_id: int):
-    if cart_id not in carts:
-        raise HTTPException(status_code=404, detail="Cart not found")
-    cart = carts
-    return {f"cart {cart_id}": cart.products}
+    
+    return cart
     
 
-# ADICIONAL - ler carrinhos de compras existentes
-@app.get("/carts/", response_model=Cart)
-async def read_cart(cart: Cart):
-   return cart
+# # ADICIONAL - ler carrinhos de compras existentes
+# @app.get("/carts/", response_model=Cart)
+# async def read_carts(cart: Cart):
+#    return cart
 
 # adicionar item ao carrinho de compras
 # envia dados pelo request body
-@app.patch("/cart/product", response_model=Product)
-async def add_to_cart(product: Product):
+@app.patch("/cart/{cart_id}/product", response_model=Product)
+async def add_to_cart(cart_id:int, product: Product):
+    cart = carts[cart_id]
+    (cart.products).append(product)
+    carts[cart_id] = cart
     return product
 
 # remover item carrinho de compras 
 # como defino a quantidade de itens que vou remover?
-@app.delete("/cart/product/{product_id}", response_model=Product)
-async def remove_from_cart(product_id: int, product: Product):
+@app.delete("/cart/{cart_id}/product/{product_id}", response_model=Product)
+async def remove_from_cart(cart_id:int, product_id: int, product: Product):
     return product
 
 # criar produto
 # envia dados pelo request body
 @app.post("/inventory/", response_model=Product, status_code=status.HTTP_201_CREATED)
 async def create_product(product: Product):
+    append_json(product, "inventory.json", "inventory")
     return product
 
 # consultar inventario de produtos
