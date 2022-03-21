@@ -106,9 +106,9 @@ async def read_cart(cart_id: int):
     
 
 # ADICIONAL - ler carrinhos de compras existentes
-#@app.get("/carts/", response_model=Cart)
-#async def read_cart(cart: Cart):
-#    return cart
+@app.get("/carts/", response_model=Cart)
+async def read_cart(cart: Cart):
+   return cart
 
 # adicionar item ao carrinho de compras
 # envia dados pelo request body
