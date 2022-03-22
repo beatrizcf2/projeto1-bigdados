@@ -38,12 +38,30 @@ class Product(BaseModel):
                 "name": "iogurte desnatado nestle"
                 })
 
-    
+class Product_without_id(BaseModel):
+    name: str = Field(None, title="The name of the product", max_length=100, example="iogurte")                              
+    description: Optional[str] = Field(None, title="The description of the product", max_length=300, example="iogurte desnatado 200g")   
+    brand: Optional[str] = Field(None, title="The brand of the item", max_length=80, example="nestle")   
+    price: float = Field(..., gt=0, description="The price must be greater than zero", example=2.7)
+    discount: Optional[float] = Field(..., ge=0, lt=1, description="The discount must be greater than 0 and less than 1", example=0.05)     
+    quantity: float = Field(..., gt=0, description="The quantity must be greater than zero", example=1)
+    image: Optional[Image] = Field(example={
+                "url": "https://static.paodeacucar.com/img/uploads/1/912/668912.jpg",
+                "name": "iogurte desnatado nestle"
+                })
+
+
 class Cart(BaseModel):
     cart_id: int
     user_id: int                                                    
     #products: Dict[Product,int] = dict() #chave:produto, valor:qtde
     products: Set[str] = set() # lista de produtos unicos
+
+class Cart_without_id(BaseModel):
+    user_id: int                                                    
+    #products: Dict[Product,int] = dict() #chave:produto, valor:qtde
+    products: Set[str] = set() # lista de produtos unicos
+
 
 
 
@@ -60,7 +78,7 @@ async def root():
 
 # criar carrinho de compras - OK
 @app.post("/cart/", response_model=Cart, status_code=status.HTTP_201_CREATED) 
-async def create_cart(cart: Cart):
+async def create_cart(cart: Cart_without_id):
     append_json(cart, "carts.json", "carts")
     return cart
 
@@ -106,7 +124,7 @@ async def remove_from_cart(cart_id:int, product_id: int, product: Product):
 # criar produto
 # envia dados pelo request body - OK
 @app.post("/inventory/", response_model=Product, status_code=status.HTTP_201_CREATED)
-async def create_product(product: Product):
+async def create_product(product: Product_without_id):
     append_json(product, "inventory.json", "inventory")
     return product
 

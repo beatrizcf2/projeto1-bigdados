@@ -48,7 +48,9 @@ def append_json(new_data, file, tag):
     file = "data/"+file
     with open(file, 'r+') as f:
         file_data = json.load(f)
-        file_data[tag].append(new_data)
+        index = len(file_data[tag])
+        final_data = {**new_data, **{"product_id":index}}
+        file_data[tag].append(final_data)
         f.truncate(0)
         f.seek(0)
         json.dump(file_data,f, indent=4)
@@ -75,6 +77,7 @@ def remove_from_json(id, file, tag, id_type=0):
 
 
 def update_json(id,new_data,file,tag):
+    index = 0
     '''
         atualiza dados ao arquivo json
     '''
@@ -88,17 +91,23 @@ def update_json(id,new_data,file,tag):
         for dado in item: 
             # se o id o produto esta na lista
             if dado["product_id"] == id:
+                print(id)
                 index = item.index(dado)
                 # para cada chave e valor no produto do inventario 
                 for k,v in dado.items():
                     if dado[k] != new_data[k]:
                         dado[k] = new_data[k] # atualiza o valor do produto
                 pass #saio do for pq ja encontrei um id
-        print(dado)
-        print(index)
-        #f.truncate(0)
-        #f.seek(0)
-        #json.dump(file_data,f, indent=4)
+                print(dado)
+                dado_novo = dado
+                print(index)
+        print(dado_novo)
+        item[index] = dado_novo
+        file_data[tag] = item
+        print(item)
+        f.truncate(0)
+        f.seek(0)
+        json.dump(file_data,f, indent=4)
         return
 
 
