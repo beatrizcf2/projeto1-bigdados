@@ -77,7 +77,7 @@ async def root():
     return {"Message": "Welcome to The Shop Cart"}
 
 # criar carrinho de compras - OK
-@app.post("/cart/", response_model=Cart, status_code=status.HTTP_201_CREATED) 
+@app.post("/cart/", response_model=Cart_without_id, status_code=status.HTTP_201_CREATED) 
 async def create_cart(cart: Cart_without_id):
     append_json(cart, "carts.json", "carts")
     return cart
@@ -88,7 +88,7 @@ async def delete_cart(*, cart_id: int = Path(..., title="The ID of the cart to g
     remove_from_json(cart_id,"carts.json", "carts")
     return 
 
-# ADICIONAL - ler carrinho de compras
+# ADICIONAL - ler carrinho de compras - OK
 @app.get("/cart/{cart_id}")
 async def read_cart(*, cart_id: int):
     carts = read_json("carts.json", "carts")
@@ -107,36 +107,34 @@ async def read_cart(*, cart_id: int):
 
 # adicionar item ao carrinho de compras
 # envia dados pelo request body
-@app.patch("/cart/{cart_id}/product", response_model=Product)
-async def add_to_cart(cart_id:int, product: Product):
-    cart = carts[cart_id]
-    (cart.products).append(product)
-    carts[cart_id] = cart
-    return product
+@app.patch("/cart/{cart_id}/product")
+async def add_to_cart(cart_id:int, product: Product_without_id):
+    update_json_cart(cart_id, product,"cart.json","carts")
+    return 
 
 # remover item carrinho de compras 
 # como defino a quantidade de itens que vou remover?
-@app.delete("/cart/{cart_id}/product/{product_id}", response_model=Product)
-async def remove_from_cart(cart_id:int, product_id: int, product: Product):
+@app.delete("/cart/{cart_id}/product/{product_id}")
+async def remove_from_cart(cart_id:int, product_id: int):
     remove_from_json(product_id,"carts.json", "carts")
-    return product
+    return 
 
 # criar produto
 # envia dados pelo request body - OK
-@app.post("/inventory/", response_model=Product, status_code=status.HTTP_201_CREATED)
+@app.post("/inventory/", status_code=status.HTTP_201_CREATED)
 async def create_product(product: Product_without_id):
     append_json(product, "inventory.json", "inventory")
     return product
 
-# consultar inventario de produtos
+# consultar inventario de produtos - OK
 @app.get("/inventory/")
 async def read_all_inventory():
     all_products = read_json("inventory.json", "inventory")
 
     return all_products
 
-# consultar produto em inventario de produtos
-@app.get("/inventory/{product_id}")
+# consultar produto em inventario de produtos - OK
+@app.get("/inventory/{product_id}") 
 async def read_inventory(*, product_id: int):
     all_products = read_json("inventory.json", "inventory")
     for p in all_products:

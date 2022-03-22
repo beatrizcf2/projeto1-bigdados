@@ -9,6 +9,31 @@
             "user_id": 0,
             "products": [],
             "cart_id": 2
+        },
+        {
+            "user_id": 0,
+            "products": [],
+            "cart_id": 3
+        },
+        {
+            "user_id": 0,
+            "products": [],
+            "cart_id": 5
+        },
+        {
+            "user_id": 0,
+            "products": [],
+            "cart_id": 6
+        },
+        {
+            "user_id": 0,
+            "products": [],
+            "cart_id": 7
+        },
+        {
+            "user_id": 0,
+            "products": [],
+            "cart_id": 8
         }
     ]
 }

@@ -43,13 +43,16 @@ def append_json(new_data, file, tag):
     '''
         add dados ao arquivo json
     '''
-    #new_data = json.dumps(jsonable_encoder(new_data)) #json.dumps(new_data) # converte dici para json
     new_data = jsonable_encoder(new_data) 
     file = "data/"+file
     with open(file, 'r+') as f:
         file_data = json.load(f)
-        index = max([id[tag[:-1]+"_id"] for id in file_data[tag]]) + 1
-        final_data = {**new_data, **{tag[:-1]+"_id":index}}
+        if tag == "carts":
+            index = max([id[tag[:-1]+"_id"] for id in file_data[tag]]) + 1
+            final_data = {**new_data, **{tag[:-1]+"_id":index}}
+        else:
+            index = max([id["product_id"] for id in file_data[tag]]) + 1
+            final_data = {**new_data, **{"product_id":index}}
         file_data[tag].append(final_data)
         f.truncate(0)
         f.seek(0)

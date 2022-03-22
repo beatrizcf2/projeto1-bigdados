@@ -1,8 +1,7 @@
 {
     "inventory": [
         {
-            "product_id": 0,
-            "name": "iogurte gostoso",
+            "name": "iogurte",
             "description": "iogurte desnatado 200g",
             "brand": "nestle",
             "price": 2.7,
@@ -11,7 +10,8 @@
             "image": {
                 "url": "https://static.paodeacucar.com/img/uploads/1/912/668912.jpg",
                 "name": "iogurte desnatado nestle"
-            }
+            },
+            "product_id": 1
         },
         {
             "name": "iogurte",
@@ -24,7 +24,20 @@
                 "url": "https://static.paodeacucar.com/img/uploads/1/912/668912.jpg",
                 "name": "iogurte desnatado nestle"
             },
-            "product_id": 2
+            "product_id": 3
+        },
+        {
+            "name": "iogurte",
+            "description": "iogurte desnatado 200g",
+            "brand": "nestle",
+            "price": 2.7,
+            "discount": 0.05,
+            "quantity": 1.0,
+            "image": {
+                "url": "https://static.paodeacucar.com/img/uploads/1/912/668912.jpg",
+                "name": "iogurte desnatado nestle"
+            },
+            "product_id": 4
         }
     ]
 }
