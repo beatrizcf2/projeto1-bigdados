@@ -85,7 +85,7 @@ async def create_cart(cart: Cart_without_id):
 # deletar carrinho de compras - OK
 @app.delete("/cart/{cart_id}", response_model=Cart)
 async def delete_cart(*, cart_id: int = Path(..., title="The ID of the cart to get", ge=0)):
-    remove_from_json(cart_id,"carts.json", "carts", "cart")
+    remove_from_json(cart_id,"carts.json", "carts", "cart", 0)
     return 
 
 # ADICIONAL - ler carrinho de compras - OK
@@ -117,7 +117,7 @@ async def add_to_cart(cart_id:int, product: Product):
 # como defino a quantidade de itens que vou remover?
 @app.delete("/cart/{cart_id}/product/{product_id}")
 async def remove_from_cart(cart_id:int, product_id: int):
-    remove_from_json_cart(product_id,"carts.json", "carts")
+    remove_from_json(cart_id,"carts.json", "carts", "product",  1, product_id )
     return 
 
 # criar produto
@@ -148,13 +148,14 @@ async def read_inventory(*, product_id: int):
 # envia o que quer alterar pelo request body
 @app.patch("/inventory/{product_id}")
 async def update_product(product_id: int, product: Product):
-    update_json(product_id, product,"inventory.json","inventory")
+    #update_json(product_id, product,"inventory.json","inventory")
+    update_json_cart(product_id, product,"inventory.json","inventory", 0)
     return 
 
 # remover produto do inventario - OK
 @app.delete("/inventory/{product_id}")
 async def delete_product(product_id: int):
-    remove_from_json(product_id, "inventory.json", "inventory", id_type="product")
+    remove_from_json(product_id, "inventory.json", "inventory", "product", 0)
     return 
 
 

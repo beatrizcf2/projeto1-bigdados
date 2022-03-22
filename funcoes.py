@@ -20,6 +20,15 @@ def find_data(id, data, id_type):
             return item
     return False
 
+def format_to_json(file, data):
+    '''
+     convert dict in json format
+    '''
+    file.truncate(0)
+    file.seek(0)
+    json.dump(data,file, indent=4)
+    return
+
 def read_json(file, key):
     '''
         le um arquivo em json e retorna seu conteudo
@@ -28,6 +37,7 @@ def read_json(file, key):
     with open(file, "r+", encoding='utf-8') as file_data:
         file_data = json.loads(file_data.read())
         return file_data[key]
+
 
 
 def append_json(new_data, file, tag, id_type):
@@ -41,26 +51,34 @@ def append_json(new_data, file, tag, id_type):
         index = max([id[id_type+"_id"] for id in file_data[tag]]) + 1
         final_data = {**new_data, **{id_type+"_id":index}}
         file_data[tag].append(final_data)
-        f.truncate(0)
-        f.seek(0)
-        json.dump(file_data,f, indent=4)
+        format_to_json(f, file_data)
         return
 
 
-def remove_from_json(id, file, tag, id_type):
+def remove_from_json(id, file, tag, id_type, update_type, id_extra=0):
+    '''
+        atualiza dados ao arquivo json
+        update_type: 0 - cart
+                     1 - cart+product
+    '''
+
     file = "data/"+file
     print(file)
     
     with open(file, 'r+') as f:
         file_data = json.load(f)
-        item = find_id(id, file, tag, id_type)
-        file_data[tag].remove(item)
-        f.truncate(0)
-        f.seek(0)
-        json.dump(file_data,f, indent=4)
+        if update_type == 1:
+            cart = find_id(id, file, tag, id_type="cart")
+            cart_index = file_data[tag].index(cart)
+            product = find_data(id_extra, cart["products"], id_type="product")
+            file_data[tag][cart_index]["products"].remove(product)
+        elif update_type == 0:
+            product = find_id(id, file, tag, id_type)
+            file_data[tag].remove(product)
+        format_to_json(f, file_data)
         return
     
-def remove_from_json_cart(id, file, tag, id_type=0):
+def remove_from_json_cart(id, file, tag, id_type=0 ):
     file = "data/"+file
     
     with open(file, 'r+') as f:
@@ -72,43 +90,8 @@ def remove_from_json_cart(id, file, tag, id_type=0):
         print(index)
         
         file_data[tag][index]["products"].remove(item)
-        f.truncate(0)
-        f.seek(0)
-        json.dump(file_data,f, indent=4)
+        format_to_json(f, file_data)
         return
-
-
-def update_json(id,new_data,file,tag):
-     index = 0
-     '''
-         atualiza dados ao arquivo json
-     '''
-     new_data = jsonable_encoder(new_data) 
-     file = "data/"+file
-     with open(file, 'r+') as f:
-         file_data = json.load(f)
-         item = file_data[tag]
-         # para cada produto no inventario
-         for dado in item: 
-             # se o id o produto esta na lista
-             if dado["product_id"] == id:
-                 print(id)
-                 index = item.index(dado)
-                 # para cada chave e valor no produto do inventario 
-                 for k,v in dado.items():
-                     if dado[k] != new_data[k]:
-                         dado[k] = new_data[k] # atualiza o valor do produto
-                 dado_novo = dado
-                 break
-         item[index] = dado_novo
-         file_data[tag] = item
-         print(item)
-         f.truncate(0)
-         f.seek(0)
-         json.dump(file_data,f, indent=4)
-         return
-
-
 
 def update_json_cart(id, new_data,file,tag, update_type, id_extra = 0):
     '''
@@ -139,15 +122,11 @@ def update_json_cart(id, new_data,file,tag, update_type, id_extra = 0):
             lista = file_data[tag]
             if product:
                 product_index = file_data[tag].index(product)
-                lista[product_index]["quantity"] += new_data["quantity"]
+                lista[product_index] = new_data
             else:
                 lista.append(new_data)
             file_data[tag] = lista
-        
-        print(file_data)
-        f.truncate(0)
-        f.seek(0)
-        json.dump(file_data,f, indent=4)
+        format_to_json(f, file_data)
         return
 
 
