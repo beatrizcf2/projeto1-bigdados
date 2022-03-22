@@ -108,8 +108,8 @@ async def read_cart(*, cart_id: int):
 # adicionar item ao carrinho de compras
 # envia dados pelo request body
 @app.patch("/cart/{cart_id}/product")
-async def add_to_cart(cart_id:int, product: Product_without_id):
-    update_json_cart(cart_id, product,"cart.json","carts")
+async def add_to_cart(cart_id:int, product: Product):
+    update_json_cart(cart_id, product,"carts.json","carts")
     return 
 
 # remover item carrinho de compras 
@@ -122,7 +122,7 @@ async def remove_from_cart(cart_id:int, product_id: int):
 # criar produto
 # envia dados pelo request body - OK
 @app.post("/inventory/", status_code=status.HTTP_201_CREATED)
-async def create_product(product: Product_without_id):
+async def create_product(product: Product):
     append_json(product, "inventory.json", "inventory")
     return product
 

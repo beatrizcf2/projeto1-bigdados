@@ -113,6 +113,39 @@ def update_json(id,new_data,file,tag):
         json.dump(file_data,f, indent=4)
         return
 
+def update_json_cart(id,new_data,file,tag):
+    index = 0
+    exists = False
+    '''
+        atualiza dados ao arquivo json
+    '''
+    new_data = jsonable_encoder(new_data) 
+    file = "data/"+file
+    with open(file, 'r+') as f:
+        file_data = json.load(f)
+        cart = find_id(id, file, tag, id_type=0)
+        cart_index = file_data[tag].index(cart)
+        print(cart_index)
+        for product in cart["products"]:
+            if cart["product_id"] == id:
+                exists = True
+                index = cart["products"].index(product)
+                product["quantity"] += new_data["quantity"]
+                new_product = product
+                cart["products"][index] = new_product
+                break
+
+        if not exists:
+            cart["products"].append(new_data)
+        print(file_data[tag])
+        
+        
+        file_data[tag][cart_index] = cart
+        f.truncate(0)
+        f.seek(0)
+        json.dump(file_data,f, indent=4)
+        return
+
 
 
 # criar funcao para dar raise error caso nao exista o id
