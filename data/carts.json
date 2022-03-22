@@ -6,28 +6,9 @@
             "products": []
         },
         {
-            "cart_id": 1,
-            "user_id": 0,
-            "products": []
-        },
-        {
-            "cart_id": 2,
-            "user_id": 0,
-            "products": []
-        },
-        {
-            "cart_id": 0,
             "user_id": 0,
             "products": [],
-            "product_id": 3
-        },
-        {
-            "user_id": 0,
-            "products": [
-                "acarrao",
-                "arroz"
-            ],
-            "product_id": 4
+            "cart_id": 2
         }
     ]
 }

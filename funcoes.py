@@ -48,8 +48,8 @@ def append_json(new_data, file, tag):
     file = "data/"+file
     with open(file, 'r+') as f:
         file_data = json.load(f)
-        index = len(file_data[tag])
-        final_data = {**new_data, **{"product_id":index}}
+        index = max([id[tag[:-1]+"_id"] for id in file_data[tag]]) + 1
+        final_data = {**new_data, **{tag[:-1]+"_id":index}}
         file_data[tag].append(final_data)
         f.truncate(0)
         f.seek(0)
