@@ -1,34 +1,24 @@
 import json
 from fastapi.encoders import jsonable_encoder
 
-def find_id(id, file, tag, id_type=0):
+
+def find_id(id, file, tag, id_type):
     '''
-        Funcao que retorna objeto do tipo definido por id_type 
+        Funcao que retorna objeto do tipo definido por id_type e o index em que ele se
         id_type = 0 - cart
         id_type = 1 - inventory 
     '''
     with open(file, 'r', encoding='utf-8') as meu_json:
         dados = json.load(meu_json)
-        for dado in dados[tag]:
-            if id_type == 0:
-                if dado['cart_id']==id:
-                    print(f"\n{dado}\n")
-                    return dado
-            if id_type == 1:
-                if dado['product_id']==id:
-                    print(f"\n{dado}\n")
-                    return dado
-        return False
+        dado = find_data(id,dados[tag],id_type)
+        return dado
+        
 
-
-
-def find_product(id, dado):
-    print(dado)
-    for product in dado:
-        if product['product_id']==id:
-            print(f"achei o besta")
-            return product
-        return False
+def find_data(id, data, id_type):
+    for item in data:
+        if item[id_type+'_id']==id:
+            return item
+    return False
 
 def read_json(file, key):
     '''
@@ -39,20 +29,17 @@ def read_json(file, key):
         file_data = json.loads(file_data.read())
         return file_data[key]
 
-def append_json(new_data, file, tag):
+
+def append_json(new_data, file, tag, id_type):
     '''
         add dados ao arquivo json
     '''
     new_data = jsonable_encoder(new_data) 
     file = "data/"+file
     with open(file, 'r+') as f:
-        file_data = json.load(f)
-        if tag == "carts":
-            index = max([id[tag[:-1]+"_id"] for id in file_data[tag]]) + 1
-            final_data = {**new_data, **{tag[:-1]+"_id":index}}
-        else:
-            index = max([id["product_id"] for id in file_data[tag]]) + 1
-            final_data = {**new_data, **{"product_id":index}}
+        file_data = json.load(f)  
+        index = max([id[id_type+"_id"] for id in file_data[tag]]) + 1
+        final_data = {**new_data, **{id_type+"_id":index}}
         file_data[tag].append(final_data)
         f.truncate(0)
         f.seek(0)
@@ -60,92 +47,108 @@ def append_json(new_data, file, tag):
         return
 
 
-
-def remove_from_json(id, file, tag, id_type=0):
-    # verifica se existe o id 
-    # se existir, remove
+def remove_from_json(id, file, tag, id_type):
     file = "data/"+file
     print(file)
     
     with open(file, 'r+') as f:
         file_data = json.load(f)
         item = find_id(id, file, tag, id_type)
-        print(item)
         file_data[tag].remove(item)
         f.truncate(0)
         f.seek(0)
         json.dump(file_data,f, indent=4)
         return
     
+def remove_from_json_cart(id, file, tag, id_type=0):
+    file = "data/"+file
+    
+    with open(file, 'r+') as f:
+        file_data = json.load(f)
+        item = find_id(id, file, tag, id_type)
+        print(item)
+        print(file_data[tag].index(item))
+        index = file_data[tag].index(item)
+        print(index)
+        
+        file_data[tag][index]["products"].remove(item)
+        f.truncate(0)
+        f.seek(0)
+        json.dump(file_data,f, indent=4)
+        return
 
 
 def update_json(id,new_data,file,tag):
-    index = 0
+     index = 0
+     '''
+         atualiza dados ao arquivo json
+     '''
+     new_data = jsonable_encoder(new_data) 
+     file = "data/"+file
+     with open(file, 'r+') as f:
+         file_data = json.load(f)
+         item = file_data[tag]
+         # para cada produto no inventario
+         for dado in item: 
+             # se o id o produto esta na lista
+             if dado["product_id"] == id:
+                 print(id)
+                 index = item.index(dado)
+                 # para cada chave e valor no produto do inventario 
+                 for k,v in dado.items():
+                     if dado[k] != new_data[k]:
+                         dado[k] = new_data[k] # atualiza o valor do produto
+                 dado_novo = dado
+                 break
+         item[index] = dado_novo
+         file_data[tag] = item
+         print(item)
+         f.truncate(0)
+         f.seek(0)
+         json.dump(file_data,f, indent=4)
+         return
+
+
+
+def update_json_cart(id, new_data,file,tag, update_type, id_extra = 0):
     '''
         atualiza dados ao arquivo json
+        update_type: 0 - edit
+                     1 - add
     '''
-    #new_data = json.dumps(jsonable_encoder(new_data)) #json.dumps(new_data) # converte dici para json
     new_data = jsonable_encoder(new_data) 
     file = "data/"+file
+    
     with open(file, 'r+') as f:
         file_data = json.load(f)
-        item = file_data[tag]
-        # para cada produto no inventario
-        for dado in item: 
-            # se o id o produto esta na lista
-            if dado["product_id"] == id:
-                print(id)
-                index = item.index(dado)
-                # para cada chave e valor no produto do inventario 
-                for k,v in dado.items():
-                    if dado[k] != new_data[k]:
-                        dado[k] = new_data[k] # atualiza o valor do produto
-                pass #saio do for pq ja encontrei um id
-                print(dado)
-                dado_novo = dado
-                print(index)
-        print(dado_novo)
-        item[index] = dado_novo
-        file_data[tag] = item
-        print(item)
+        if update_type == 1:
+            #preciso achar o cart id
+            cart = find_id(id, file, tag, id_type="cart")
+            cart_index = file_data[tag].index(cart)
+            lista = cart["products"]
+            product = find_data(id_extra, cart["products"], id_type="product")
+            if product:
+                product_index = cart["products"].index(product)
+                lista[product_index]["quantity"] += new_data["quantity"]
+            else:
+                lista.append(new_data)
+            file_data[tag][cart_index]["products"] = lista
+            
+        elif update_type == 0:
+            product = find_id(id, file, tag, id_type="product")
+            lista = file_data[tag]
+            if product:
+                product_index = file_data[tag].index(product)
+                lista[product_index]["quantity"] += new_data["quantity"]
+            else:
+                lista.append(new_data)
+            file_data[tag] = lista
+        
+        print(file_data)
         f.truncate(0)
         f.seek(0)
         json.dump(file_data,f, indent=4)
         return
-
-def update_json_cart(id,new_data,file,tag):
-    index = 0
-    exists = False
-    '''
-        atualiza dados ao arquivo json
-    '''
-    new_data = jsonable_encoder(new_data) 
-    file = "data/"+file
-    with open(file, 'r+') as f:
-        file_data = json.load(f)
-        cart = find_id(id, file, tag, id_type=0)
-        cart_index = file_data[tag].index(cart)
-        print(cart_index)
-        for product in cart["products"]:
-            if cart["product_id"] == id:
-                exists = True
-                index = cart["products"].index(product)
-                product["quantity"] += new_data["quantity"]
-                new_product = product
-                cart["products"][index] = new_product
-                break
-
-        if not exists:
-            cart["products"].append(new_data)
-        print(file_data[tag])
-        
-        
-        file_data[tag][cart_index] = cart
-        f.truncate(0)
-        f.seek(0)
-        json.dump(file_data,f, indent=4)
-        return
-
 
 
 # criar funcao para dar raise error caso nao exista o id
@@ -158,17 +161,6 @@ if cart_id not in carts:
     return carts
 '''
 
-# def find_id(cart_id, path,tag):
-#     lista_confere = []
-#     with open(path, encoding='utf-8') as meu_json:
-#         dados = json.load(meu_json)
-#         for dado in dados[tag]:
-#             if dado['cart_id']==cart_id not in lista_confere:
-#                 lista_confere.append(dado['cart_id'])
-#                 index = dados.index(dado['cart_id'])
-#                 return True
-    
-#         return False
 
 
 

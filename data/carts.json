@@ -1,13 +1,34 @@
 {
     "carts": [
         {
-            "cart_id": 0,
-            "user_id": 5,
-            "products": []
-        },
-        {
             "user_id": 0,
             "products": [
+                {
+                    "product_id": 1,
+                    "name": "iogurte",
+                    "description": "iogurte desnatado 200g",
+                    "brand": "nestle",
+                    "price": 2.7,
+                    "discount": 0.05,
+                    "quantity": 25.0,
+                    "image": {
+                        "url": "https://static.paodeacucar.com/img/uploads/1/912/668912.jpg",
+                        "name": "iogurte desnatado nestle"
+                    }
+                },
+                {
+                    "product_id": 1,
+                    "name": "iogurte",
+                    "description": "iogurte desnatado 200g",
+                    "brand": "nestle",
+                    "price": 2.7,
+                    "discount": 0.05,
+                    "quantity": 1.0,
+                    "image": {
+                        "url": "https://static.paodeacucar.com/img/uploads/1/912/668912.jpg",
+                        "name": "iogurte desnatado nestle"
+                    }
+                },
                 {
                     "product_id": 1,
                     "name": "iogurte",
@@ -22,21 +43,6 @@
                     }
                 }
             ],
-            "cart_id": 2
-        },
-        {
-            "user_id": 0,
-            "products": [],
-            "cart_id": 3
-        },
-        {
-            "user_id": 0,
-            "products": [],
-            "cart_id": 5
-        },
-        {
-            "user_id": 0,
-            "products": [],
             "cart_id": 6
         },
         {
@@ -47,7 +53,17 @@
         {
             "user_id": 0,
             "products": [],
-            "cart_id": 8
+            "cart_id": 10
+        },
+        {
+            "user_id": 0,
+            "products": [],
+            "cart_id": 11
+        },
+        {
+            "user_id": 0,
+            "products": [],
+            "cart_id": 12
         }
     ]
 }

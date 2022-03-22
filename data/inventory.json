@@ -38,6 +38,84 @@
                 "name": "iogurte desnatado nestle"
             },
             "product_id": 4
+        },
+        {
+            "product_id": 5,
+            "name": "iogurte",
+            "description": "iogurte desnatado 200g",
+            "brand": "nestle",
+            "price": 2.7,
+            "discount": 0.05,
+            "quantity": 1.0,
+            "image": {
+                "url": "https://static.paodeacucar.com/img/uploads/1/912/668912.jpg",
+                "name": "iogurte desnatado nestle"
+            }
+        },
+        {
+            "product_id": 6,
+            "name": "iogurte",
+            "description": "iogurte desnatado 200g",
+            "brand": "nestle",
+            "price": 2.7,
+            "discount": 0.05,
+            "quantity": 1.0,
+            "image": {
+                "url": "https://static.paodeacucar.com/img/uploads/1/912/668912.jpg",
+                "name": "iogurte desnatado nestle"
+            }
+        },
+        {
+            "product_id": 7,
+            "name": "iogurte",
+            "description": "iogurte desnatado 200g",
+            "brand": "nestle",
+            "price": 2.7,
+            "discount": 0.05,
+            "quantity": 1.0,
+            "image": {
+                "url": "https://static.paodeacucar.com/img/uploads/1/912/668912.jpg",
+                "name": "iogurte desnatado nestle"
+            }
+        },
+        {
+            "product_id": 8,
+            "name": "iogurte",
+            "description": "iogurte desnatado 200g",
+            "brand": "nestle",
+            "price": 2.7,
+            "discount": 0.05,
+            "quantity": 1.0,
+            "image": {
+                "url": "https://static.paodeacucar.com/img/uploads/1/912/668912.jpg",
+                "name": "iogurte desnatado nestle"
+            }
+        },
+        {
+            "name": "bananola",
+            "description": "iogurte desnatado 200g",
+            "brand": "nestle",
+            "price": 2.7,
+            "discount": 0.05,
+            "quantity": 1.0,
+            "image": {
+                "url": "https://static.paodeacucar.com/img/uploads/1/912/668912.jpg",
+                "name": "iogurte desnatado nestle"
+            },
+            "product_id": 3
+        },
+        {
+            "name": "maca",
+            "description": "maca pacote",
+            "brand": "turma da monica",
+            "price": 10.0,
+            "discount": 0.05,
+            "quantity": 10.0,
+            "image": {
+                "url": "https://static.paodeacucar.com/img/uploads/1/912/668912.jpg",
+                "name": "iogurte desnatado nestle"
+            },
+            "product_id": 1
         }
     ]
 }

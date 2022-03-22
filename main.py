@@ -79,13 +79,13 @@ async def root():
 # criar carrinho de compras - OK
 @app.post("/cart/", response_model=Cart_without_id, status_code=status.HTTP_201_CREATED) 
 async def create_cart(cart: Cart_without_id):
-    append_json(cart, "carts.json", "carts")
+    append_json(cart, "carts.json", "carts", "cart")
     return cart
 
 # deletar carrinho de compras - OK
 @app.delete("/cart/{cart_id}", response_model=Cart)
 async def delete_cart(*, cart_id: int = Path(..., title="The ID of the cart to get", ge=0)):
-    remove_from_json(cart_id,"carts.json", "carts")
+    remove_from_json(cart_id,"carts.json", "carts", "cart")
     return 
 
 # ADICIONAL - ler carrinho de compras - OK
@@ -109,21 +109,22 @@ async def read_cart(*, cart_id: int):
 # envia dados pelo request body
 @app.patch("/cart/{cart_id}/product")
 async def add_to_cart(cart_id:int, product: Product):
-    update_json_cart(cart_id, product,"carts.json","carts")
+    #update_json_cart1(cart_id, product,"carts.json","carts")
+    update_json_cart(cart_id, product,"carts.json","carts", 1, product.product_id)
     return 
 
 # remover item carrinho de compras 
 # como defino a quantidade de itens que vou remover?
 @app.delete("/cart/{cart_id}/product/{product_id}")
 async def remove_from_cart(cart_id:int, product_id: int):
-    remove_from_json(product_id,"carts.json", "carts")
+    remove_from_json_cart(product_id,"carts.json", "carts")
     return 
 
 # criar produto
 # envia dados pelo request body - OK
 @app.post("/inventory/", status_code=status.HTTP_201_CREATED)
-async def create_product(product: Product):
-    append_json(product, "inventory.json", "inventory")
+async def create_product(product: Product_without_id):
+    append_json(product, "inventory.json", "inventory", "product")
     return product
 
 # consultar inventario de produtos - OK
@@ -151,9 +152,9 @@ async def update_product(product_id: int, product: Product):
     return 
 
 # remover produto do inventario - OK
-@app.delete("/inventory/{product_id}", response_model=List[Product])
+@app.delete("/inventory/{product_id}")
 async def delete_product(product_id: int):
-    remove_from_json(product_id, "inventory.json", "inventory", id_type=1)
+    remove_from_json(product_id, "inventory.json", "inventory", id_type="product")
     return 
 
 
