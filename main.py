@@ -109,8 +109,8 @@ async def read_cart(*, cart_id: int):
 # envia dados pelo request body
 @app.patch("/cart/{cart_id}/product")
 async def add_to_cart(cart_id:int, product: Product):
-    #update_json_cart1(cart_id, product,"carts.json","carts")
-    update_json_cart(cart_id, product,"carts.json","carts", 1, product.product_id)
+    
+    update_json(cart_id, product,"carts.json","carts", 1, product.product_id)
     return 
 
 # remover item carrinho de compras 
@@ -148,8 +148,7 @@ async def read_inventory(*, product_id: int):
 # envia o que quer alterar pelo request body
 @app.patch("/inventory/{product_id}")
 async def update_product(product_id: int, product: Product):
-    #update_json(product_id, product,"inventory.json","inventory")
-    update_json_cart(product_id, product,"inventory.json","inventory", 0)
+    update_json(product_id, product,"inventory.json","inventory", 0)
     return 
 
 # remover produto do inventario - OK

@@ -2,7 +2,21 @@
     "carts": [
         {
             "user_id": 0,
-            "products": [],
+            "products": [
+                {
+                    "product_id": 1,
+                    "name": "iogurte",
+                    "description": "iogurte desnatado 200g",
+                    "brand": "nestle",
+                    "price": 2.7,
+                    "discount": 0.05,
+                    "quantity": 2.0,
+                    "image": {
+                        "url": "https://static.paodeacucar.com/img/uploads/1/912/668912.jpg",
+                        "name": "iogurte desnatado nestle"
+                    }
+                }
+            ],
             "cart_id": 13
         }
     ]

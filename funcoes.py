@@ -1,6 +1,9 @@
 import json
 from fastapi.encoders import jsonable_encoder
+from fastapi import HTTPException
 
+def raise_exception(status_code):
+    raise HTTPException(status_code=status_code, detail="Item not found")
 
 def find_id(id, file, tag, id_type):
     '''
@@ -63,37 +66,24 @@ def remove_from_json(id, file, tag, id_type, update_type, id_extra=0):
     '''
 
     file = "data/"+file
-    print(file)
     
     with open(file, 'r+') as f:
         file_data = json.load(f)
-        if update_type == 1:
-            cart = find_id(id, file, tag, id_type="cart")
-            cart_index = file_data[tag].index(cart)
-            product = find_data(id_extra, cart["products"], id_type="product")
-            file_data[tag][cart_index]["products"].remove(product)
-        elif update_type == 0:
-            product = find_id(id, file, tag, id_type)
-            file_data[tag].remove(product)
-        format_to_json(f, file_data)
-        return
-    
-def remove_from_json_cart(id, file, tag, id_type=0 ):
-    file = "data/"+file
-    
-    with open(file, 'r+') as f:
-        file_data = json.load(f)
-        item = find_id(id, file, tag, id_type)
-        print(item)
-        print(file_data[tag].index(item))
-        index = file_data[tag].index(item)
-        print(index)
-        
-        file_data[tag][index]["products"].remove(item)
+        try: 
+            if update_type == 1:
+                cart = find_id(id, file, tag, id_type="cart")
+                cart_index = file_data[tag].index(cart)
+                product = find_data(id_extra, cart["products"], id_type="product")
+                file_data[tag][cart_index]["products"].remove(product)
+            elif update_type == 0:
+                product = find_id(id, file, tag, id_type)
+                file_data[tag].remove(product)
+        except:
+            raise_exception(404)
         format_to_json(f, file_data)
         return
 
-def update_json_cart(id, new_data,file,tag, update_type, id_extra = 0):
+def update_json(id, new_data,file,tag, update_type, id_extra = 0):
     '''
         atualiza dados ao arquivo json
         update_type: 0 - edit
@@ -104,42 +94,37 @@ def update_json_cart(id, new_data,file,tag, update_type, id_extra = 0):
     
     with open(file, 'r+') as f:
         file_data = json.load(f)
-        if update_type == 1:
-            #preciso achar o cart id
-            cart = find_id(id, file, tag, id_type="cart")
-            cart_index = file_data[tag].index(cart)
-            lista = cart["products"]
-            product = find_data(id_extra, cart["products"], id_type="product")
-            if product:
-                product_index = cart["products"].index(product)
-                lista[product_index]["quantity"] += new_data["quantity"]
-            else:
-                lista.append(new_data)
-            file_data[tag][cart_index]["products"] = lista
-            
-        elif update_type == 0:
-            product = find_id(id, file, tag, id_type="product")
-            lista = file_data[tag]
-            if product:
-                product_index = file_data[tag].index(product)
-                lista[product_index] = new_data
-            else:
-                lista.append(new_data)
-            file_data[tag] = lista
+        try:
+            if update_type == 1:
+                #preciso achar o cart id
+                cart = find_id(id, file, tag, id_type="cart")
+                cart_index = file_data[tag].index(cart)
+                lista = cart["products"]
+                product = find_data(id_extra, cart["products"], id_type="product")
+                if product:
+                    product_index = cart["products"].index(product)
+                    lista[product_index]["quantity"] += new_data["quantity"]
+                else:
+                    lista.append(new_data)
+                file_data[tag][cart_index]["products"] = lista
+                
+            elif update_type == 0:
+                product = find_id(id, file, tag, id_type="product")
+                lista = file_data[tag]
+                if product:
+                    product_index = file_data[tag].index(product)
+                    lista[product_index] = new_data
+                else:
+                    raise
+                    lista.append(new_data)
+                file_data[tag] = lista
+        except:
+            raise_exception(404)
         format_to_json(f, file_data)
         return
 
 
-# criar funcao para dar raise error caso nao exista o id
-'''
-ESCOPO
-if cart_id not in carts:
-        raise HTTPException(status_code=404, detail="Cart not found")
-    del carts[cart_id]
-    print(carts)
-    return carts
-'''
-
+    
 
 
 
